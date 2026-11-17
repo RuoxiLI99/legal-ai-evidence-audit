@@ -1,0 +1,81 @@
+{
+  "rules": [
+    {
+      "id": "R1",
+      "text": "An application filed by the deadline is eligible for review.",
+      "when": {"filed_by_deadline": true},
+      "outcome": "review_available"
+    },
+    {
+      "id": "R2",
+      "text": "A late application is ineligible if the applicant received the required notice.",
+      "when": {"filed_by_deadline": false, "received_required_notice": true},
+      "outcome": "review_unavailable"
+    },
+    {
+      "id": "R3",
+      "text": "A late application remains eligible if the agency failed to give the required notice.",
+      "when": {"filed_by_deadline": false, "received_required_notice": false},
+      "outcome": "review_available"
+    }
+  ],
+  "examples": [
+    {
+      "id": "timely_missing_notice_stable",
+      "facts": {"filed_by_deadline": true, "received_required_notice": null},
+      "answer": {"outcome": "review_available", "citations": ["R1"], "missing_facts": []}
+    },
+    {
+      "id": "late_with_required_notice",
+      "facts": {"filed_by_deadline": false, "received_required_notice": true},
+      "answer": {"outcome": "review_unavailable", "citations": ["R2"], "missing_facts": []}
+    },
+    {
+      "id": "late_notice_exception",
+      "facts": {"filed_by_deadline": false, "received_required_notice": false},
+      "answer": {"outcome": "review_available", "citations": ["R3"], "missing_facts": []}
+    },
+    {
+      "id": "correct_outcome_wrong_clause",
+      "facts": {"filed_by_deadline": false, "received_required_notice": false},
+      "answer": {"outcome": "review_available", "citations": ["R1"], "missing_facts": []}
+    },
+    {
+      "id": "missing_notice_both_branches",
+      "facts": {"filed_by_deadline": false, "received_required_notice": null},
+      "answer": {
+        "outcome": "undetermined",
+        "citations": ["R2", "R3"],
+        "missing_facts": ["received_required_notice"]
+      }
+    },
+    {
+      "id": "missing_notice_overconfident",
+      "facts": {"filed_by_deadline": false, "received_required_notice": null},
+      "answer": {"outcome": "review_unavailable", "citations": ["R2"], "missing_facts": []}
+    },
+    {
+      "id": "known_and_unknown_citations",
+      "facts": {"filed_by_deadline": true, "received_required_notice": true},
+      "answer": {"outcome": "review_available", "citations": ["R1", "R9"], "missing_facts": []}
+    },
+    {
+      "id": "conditional_incomplete_support",
+      "facts": {"filed_by_deadline": false, "received_required_notice": null},
+      "answer": {
+        "outcome": "undetermined",
+        "citations": ["R2"],
+        "missing_facts": ["received_required_notice"]
+      }
+    },
+    {
+      "id": "timely_irrelevant_uncertainty",
+      "facts": {"filed_by_deadline": true, "received_required_notice": null},
+      "answer": {
+        "outcome": "review_available",
+        "citations": ["R1"],
+        "missing_facts": ["received_required_notice"]
+      }
+    }
+  ]
+}
